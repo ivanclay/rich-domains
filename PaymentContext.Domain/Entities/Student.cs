@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using Flunt.Validations;
 using PaymentContext.Domain.ValueObjects;
 using PaymentContext.Shared.Entities;
 
@@ -24,10 +26,16 @@ public class Student : Entity
     public IReadOnlyCollection<Subscription> Subscriptions { get { return _subscriptions.ToArray(); } }
     public void AddSubscription(Subscription subscription)
     {
+        var hasSubscriptionActive = false;
         foreach (var item in Subscriptions)
         {
-            item.Deactivate();
+            if(item.Active)
+                hasSubscriptionActive = true;
         }
-        _subscriptions.Add(subscription);
+        
+        AddNotifications(
+            new Contract<bool>()
+            .Requires()
+            .IsFalse(hasSubscriptionActive, "Student.Subscriptions", "Exists a active subsription"));
     }
 }
