@@ -3,8 +3,8 @@ using PaymentContext.Shared.ValueObject;
 
 namespace PaymentContext.Domain.ValueObjects;
 
-    public class Name: ValueObject
-    {
+public class Name: ValueObject
+{
         public Name(string firstName, string lastName)
         {
             FirstName = firstName;
@@ -25,4 +25,8 @@ namespace PaymentContext.Domain.ValueObjects;
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName}";
     }
+}
