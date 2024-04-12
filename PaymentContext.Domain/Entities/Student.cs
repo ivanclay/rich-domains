@@ -27,7 +27,7 @@ public class Student : Entity
     public void AddSubscription(Subscription subscription)
     {
         var hasSubscriptionActive = false;
-        foreach (var item in Subscriptions)
+        foreach (var item in _subscriptions)
         {
             if(item.Active)
                 hasSubscriptionActive = true;
@@ -36,6 +36,7 @@ public class Student : Entity
         AddNotifications(
             new Contract<bool>()
             .Requires()
-            .IsFalse(hasSubscriptionActive, "Student.Subscriptions", "Exists a active subsription"));
+            .IsFalse(hasSubscriptionActive, "Student.Subscriptions", "Exists a active subsription")
+            .IsGreaterThan(0, subscription.Payments.Count, "Student.Subscriptions", "Not Exists payments"));
     }
 }
