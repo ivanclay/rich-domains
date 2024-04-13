@@ -21,7 +21,7 @@ public class SubscriptionHandler :
         _repository = repository;
         _emailService = emailService;
     }
-    public ICommandResult Handler(CreateBoletoSubscriptionCommand command)
+    public ICommandResult Handle(CreateBoletoSubscriptionCommand command)
     {
         //Fail fast validation
         command.Validate();
@@ -33,6 +33,7 @@ public class SubscriptionHandler :
         //verify document;
         if(_repository.DocumentExists(command.Document))
             AddNotification("Document", "Documento em uso");
+        
         //verify e-mail;
         if(_repository.EmailExists(command.Email))
             AddNotification("Email", "Email em uso");
@@ -69,8 +70,12 @@ public class SubscriptionHandler :
         subscription.AddPayment(payment);
         student.AddSubscription(subscription);                    
 
-        //apply validations
+        //Group validations
         AddNotifications(name, document,email, address, student, subscription, payment);
+
+        //Check validations
+        if(!IsValid)
+            return new CommandResult(false, "Subscription not created!");
 
         //save informations
         _repository.CreateSubscription(student);
